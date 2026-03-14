@@ -1,0 +1,57 @@
+﻿@using _5BB_POS.RequestModels
+@model CategoryRequestModel
+
+@{
+    ViewData["Title"] = "Edit Category";
+}
+
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-lg-5 mx-auto">
+            <div class="mb-3">
+                <a asp-action="Index" class="text-decoration-none text-muted small">
+                    <i class="bi bi-arrow-left"></i> Back to Category List
+                </a>
+            </div>
+
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-info text-white p-3">
+                    <h5 class="card-title mb-0">
+                        <i class="bi bi-pencil-square me-2"></i>Modify Category
+                    </h5>
+                </div>
+                <div class="card-body p-4">
+                    <form asp-action="UpdateCategory" method="post">
+                        @Html.AntiForgeryToken()
+
+                        <input type="hidden" asp-for="id" />
+
+                        <div class="mb-4">
+                            <label asp-for="name" class="form-label fw-bold">Update Category Name</label>
+                            <input asp-for="name" class="form-control form-control-lg"
+                                   placeholder="Enter new name..." required />
+                            <div class="form-text">Changing this will update all products under this category.</div>
+                            <span class="text-danger small" asp-validation-for="name"></span>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-info text-white btn-lg">
+                                <i class="bi bi-save me-1"></i> Save Changes
+                            </button>
+                            <a asp-action="Index" class="btn btn-light border">Discard Changes</a>
+                        </div>
+                    </form>
+                </div>
+                <div class="card-footer bg-light text-center py-2">
+                    <small class="text-muted">Editing ID: #@Model.id</small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

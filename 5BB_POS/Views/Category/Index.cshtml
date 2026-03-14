@@ -1,0 +1,143 @@
+﻿@using _5BB_POS.ResponseModels
+@model IEnumerable<CategoryResponseModel>
+
+@{
+    ViewData["Title"] = "Category Management";
+}
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-lg-10 mx-auto">
+
+            @if (TempData["Success"] != null)
+            {
+                <div class="alert alert-success alert-dismissible fade show shadow-sm border-0 mb-4" role="alert">
+                    <i class="bi bi-check-circle-fill me-2"></i> @TempData["Success"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
+
+            @if (TempData["Error"] != null)
+            {
+                <div class="alert alert-danger alert-dismissible fade show shadow-sm border-0 mb-4" role="alert">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i> @TempData["Error"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
+
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h2 class="fw-bold text-primary mb-0">Category List</h2>
+                    <p class="text-muted">Manage your product categories and their visibility.</p>
+                </div>
+                <a asp-action="Create" class="btn btn-primary shadow-sm px-4">
+                    <i class="bi bi-plus-lg me-1"></i> Add New Category
+                </a>
+            </div>
+
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="bg-light">
+                                <tr>
+                                    <th class="ps-4" style="width: 10%">ID</th>
+                                    <th style="width: 50%">Category Name</th>
+                                    <th style="width: 20%">Status</th>
+                                    <th class="text-end pe-4" style="width: 20%">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var category in Model)
+                                {
+                                    <tr>
+                                        <td class="ps-4 text-muted">#@category.CategoryId</td>
+                                        <td>
+                                            <span class="fw-bold text-dark">@category.CategoryName</span>
+                                        </td>
+                                        <td>
+                                            @if (category.IsActive)
+                                            {
+                                                <span class="badge rounded-pill bg-success-subtle text-success border border-success px-3">Active</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge rounded-pill bg-secondary-subtle text-secondary border border-secondary px-3">Inactive</span>
+                                            }
+                                        </td>
+                                        <td class="text-end pe-4">
+                                            <div class="btn-group">
+                                                <a asp-action="Edit" asp-route-id="@category.CategoryId"
+                                                   class="btn btn-sm btn-outline-primary me-2 rounded">
+                                                    <i class="bi bi-pencil-square"></i> Edit
+                                                </a>
+                                                <button type="button"
+                                                        class="btn btn-sm btn-outline-danger rounded"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#deleteModal"
+                                                        data-id="@category.CategoryId"
+                                                        data-name="@category.CategoryName">
+                                                    <i class="bi bi-trash"></i> Delete
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+
+                                @if (!Model.Any())
+                                {
+                                    <tr>
+                                        <td colspan="4" class="text-center py-5 text-muted">
+                                            <i class="bi bi-inbox display-1 d-block mb-3 opacity-25"></i>
+                                            <h5>No Categories Found</h5>
+                                            <p class="small">Click 'Add New Category' to get started.</p>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header bg-danger text-white border-0">
+                <h5 class="modal-title" id="deleteModalLabel">Confirm Delete</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center py-4">
+                <i class="bi bi-exclamation-circle text-danger display-1 opacity-75"></i>
+                <h4 class="mt-3">Are you sure?</h4>
+                <p class="text-muted">You are about to deactivate: <br><strong id="modalCategoryName" class="text-dark"></strong></p>
+            </div>
+            <div class="modal-footer border-0 justify-content-center pb-4">
+                <form asp-action="DeleteCategory" method="post">
+                    <input type="hidden" name="id" id="itemToDeleteId" />
+                    <button type="button" class="btn btn-light px-4 me-2" data-bs-dismiss="modal">No, Keep it</button>
+                    <button type="submit" class="btn btn-danger px-4 shadow-sm">Yes, Delete</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        const deleteModal = document.getElementById('deleteModal');
+        if (deleteModal) {
+            deleteModal.addEventListener('show.bs.modal', event => {
+                const button = event.relatedTarget;
+                const id = button.getAttribute('data-id'); 
+                const name = button.getAttribute('data-name');
+
+                document.getElementById('itemToDeleteId').value = id;
+                document.getElementById('modalCategoryName').textContent = name;
+            });
+        }
+    </script>
+}
