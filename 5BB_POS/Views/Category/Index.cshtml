@@ -1,11 +1,13 @@
 ﻿@using _5BB_POS.ResponseModels
 @model IEnumerable<CategoryResponseModel>
-
+@inject IHttpContextAccessor HttpContextAccessor
 @{
     ViewData["Title"] = "Category Management";
+    string fullName = HttpContextAccessor.HttpContext!.User.Identity!.Name!;
 }
 
 <div class="container mt-4">
+    <h1 class=" text-center">Welcome @fullName</h1>
     <div class="row">
         <div class="col-lg-10 mx-auto">
 

@@ -2,6 +2,7 @@ using _5BB_POS.Models;
 using _5BB_POS.Repositories;
 using _5BB_POS.Repositories.IRepository;
 using _5BB_POS.Services;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 using Serilog.Events;
@@ -33,8 +34,17 @@ builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 
 //service
 builder.Services.AddScoped<CategoryService>();
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+	.AddCookie(options =>
+	{
+		options.LoginPath = "/Login";
+		options.LogoutPath = "/Logout";
+		options.ExpireTimeSpan = TimeSpan.FromMinutes(20);
+		options.SlidingExpiration = true;
+		options.AccessDeniedPath = "/AccessDenied";
+	});
 
-
+builder.Services.AddHttpContextAccessor();
 var app = builder.Build();
 
 
@@ -47,10 +57,10 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
-
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Category}/{action=Index}/{id?}");
+    pattern: "{controller=Login}/{action=Index}/{id?}");
 
 app.Run();
