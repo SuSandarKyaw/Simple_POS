@@ -1,32 +1,23 @@
 ﻿using System.Security.Claims;
+using _5BB_POS.Models;
 using _5BB_POS.RequestModels;
+using BCrypt.Net;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace _5BB_POS.Controllers;
 
 public class LoginController : Controller
 {
-	private static List<UserInfo> userInfo = new List<UserInfo>()
+	private readonly SimplePosContext _context;
+
+	public LoginController(SimplePosContext context)
 	{
-		new UserInfo
-		{
-			UserId = Guid.NewGuid().ToString(),
-		FullName = "Admin",
-		Email = "admin@gmail.com",
-		Password = "admin@123",
-		Role = "Admin"
-		},
-		new UserInfo
-				{
-					UserId = Guid.NewGuid().ToString(),
-				FullName = "Cashier",
-				Email = "cashier@gmail.com",
-				Password = "cashier@123",
-				Role = "Cashier"
-		}
-	};
+		_context = context;
+	}
+
 	public IActionResult Index()
 	{
 		return View();
@@ -35,10 +26,11 @@ public class LoginController : Controller
 	[HttpPost]
 	public async Task<IActionResult> IndexAsync(LoginRequestModel request)
 	{
-		var user =userInfo.FirstOrDefault(x=> x.Email == request.Email && x.Password == request.Password);
-		if (user == null)
+		var user = await _context.TblUsers.FirstOrDefaultAsync(x => x.Email == request.Email);
+
+		if (user == null || !BCrypt.Net.BCrypt.Verify(request.Password,user.Password))
 		{
-			TempData["ErrorMessage"] = "Failed to Login";
+			TempData["ErrorMessage"] = "Invalid Email or Password";
 			return View();
 		}
 		var claims = new List<Claim>
@@ -65,14 +57,3 @@ public class LoginController : Controller
 		return Redirect("/Category");
 	}
 }
-
-
-public class UserInfo
-{
-	public string UserId { get; set; }
-	public string FullName { get; set; }
-	public string Email { get; set; }
-	public string Password { get; set; }
-	public string Role { get; set; }
-}
-

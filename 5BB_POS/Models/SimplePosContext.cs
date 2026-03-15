@@ -19,6 +19,7 @@ public partial class SimplePosContext : DbContext
 	public virtual DbSet<TblProduct> TblProducts { get; set; }
 	public virtual DbSet<TblSale> TblSales { get; set; }
 	public virtual DbSet<TblSaleItem> TblSaleItems { get; set; }
+	public virtual DbSet<TblUser> TblUsers { get; set; }
 	protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<TblCategory>(entity =>
@@ -53,6 +54,14 @@ public partial class SimplePosContext : DbContext
 		{
 			entity.HasKey(e => e.SaleItemId);
 			entity.ToTable("Tbl_SaleItem");
+		});
+
+		modelBuilder.Entity<TblUser>(entity =>
+		{
+			entity.HasKey(e => e.UserId);
+
+			entity.ToTable("Tbl_User");
+
 		});
 		OnModelCreatingPartial(modelBuilder);
     }

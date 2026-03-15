@@ -18,5 +18,6 @@ public partial class TblCategory
 	public string? UpdatedBy { get; set; }
 
 	public DateTime? UpdatedAt { get; set; }
+
 	public virtual ICollection<TblProduct> TblProducts { get; set; } = new List<TblProduct>();
 }

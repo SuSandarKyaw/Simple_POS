@@ -23,9 +23,11 @@ public partial class _5bbposContext : DbContext
 
     public virtual DbSet<TblSaleItem> TblSaleItems { get; set; }
 
-//    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-//#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-//        => optionsBuilder.UseSqlServer("Server=.;Database=5BBPOS;User ID=sa;Password=sasa@123;TrustServerCertificate=True;");
+    public virtual DbSet<TblUser> TblUsers { get; set; }
+
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
+        => optionsBuilder.UseSqlServer("Server=.;Database=5BBPOS;User ID=sa;Password=sasa@123;TrustServerCertificate=True;");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -89,6 +91,22 @@ public partial class _5bbposContext : DbContext
                 .HasForeignKey(d => d.SaleId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Tbl_SaleItem_Tbl_Sale");
+        });
+
+        modelBuilder.Entity<TblUser>(entity =>
+        {
+            entity.HasKey(e => e.UserId);
+
+            entity.ToTable("Tbl_User");
+
+            entity.Property(e => e.Email)
+                .HasMaxLength(150)
+                .IsUnicode(false);
+            entity.Property(e => e.FullName).HasMaxLength(150);
+            entity.Property(e => e.Password).HasMaxLength(255);
+            entity.Property(e => e.Role)
+                .HasMaxLength(150)
+                .IsUnicode(false);
         });
 
         OnModelCreatingPartial(modelBuilder);
