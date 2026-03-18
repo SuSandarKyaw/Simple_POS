@@ -60,7 +60,7 @@ public class CategoryController : Controller
 
             await _categoryService.StoreAsync(reqeust);
             Log.Information($"New Category - {reqeust.name} add success");
-            return RedirectToAction("Index");
+            return RedirectToAction("Index","Category");
         }
         catch (Exception ex)
         {

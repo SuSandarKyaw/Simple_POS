@@ -1,0 +1,102 @@
+﻿@using _5BB_POS.ResponseModels
+@model IEnumerable<ProductResponseModel>
+@{
+	ViewData["Title"] = "Product Management";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold text-primary">Product Management</h2>
+            <p class="text-muted">Manage your inventory and pricing here.</p>
+        </div>
+        <a asp-action="Create" class="btn btn-primary btn-lg shadow-sm">
+            <i class="bi bi-plus-circle me-1"></i> Add New Product
+        </a>
+    </div>
+
+    <div class="card border-0 shadow-sm">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="bg-light">
+                        <tr>
+                            <th class="ps-4">Product Name</th>
+                            <th>Category</th>
+                            <th>Price</th>
+                            <th>Stock</th>
+                            <th>Status</th>
+                            <th class="text-center">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model != null && Model.Any())
+                        {
+                            foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td class="ps-4">
+                                        <span class="fw-bold text-dark">@item.ProductName</span>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-info text-dark">@item.CategoryName</span>
+                                    </td>
+                                    <td>@item.Price.ToString("C2")</td>
+                                    <td>
+                                        @if (item.StockQty <= 5)
+                                        {
+                                            <span class="text-danger fw-bold"><i class="bi bi-exclamation-triangle-fill me-1"></i>@item.StockQty</span>
+                                        }
+                                        else
+                                        {
+                                            <span>@item.StockQty</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        @if (item.IsActive)
+                                        {
+                                            <span class="badge rounded-pill bg-success-subtle text-success border border-success">Active</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge rounded-pill bg-danger-subtle text-danger border border-danger">Inactive</span>
+                                        }
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="btn-group">
+                                            <a asp-action="Edit" asp-route-id="@item.ProductId" class="btn btn-outline-secondary btn-sm">
+                                                <i class="bi bi-pencil"></i>
+                                            </a>
+                                            <button type="button" class="btn btn-outline-danger btn-sm" onclick="confirmDelete(@item.ProductId)">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="6" class="text-center py-5 text-muted">
+                                    <i class="bi bi-inbox fs-1 d-block mb-2"></i>
+                                    No products found. Start by adding one!
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function confirmDelete(id) {
+            if (confirm("Are you sure you want to delete this product?")) {
+                window.location.href = '/Product/Delete/' + id;
+            }
+        }
+    </script>
+}

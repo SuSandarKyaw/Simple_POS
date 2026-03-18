@@ -49,6 +49,9 @@ namespace _5BB_POS.Repositories
 			return data;
 		}
 
-
+		public async Task<TblCategory?> GetByName(string name)
+		{
+			return await _context.TblCategories.FirstOrDefaultAsync(x => x.Name.ToLower() == name.ToLower() && x.IsActive);
+		}
 	}
 }
