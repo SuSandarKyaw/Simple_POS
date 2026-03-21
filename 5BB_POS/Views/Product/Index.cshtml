@@ -94,9 +94,20 @@
 @section Scripts {
     <script>
         function confirmDelete(id) {
-            if (confirm("Are you sure you want to delete this product?")) {
-                window.location.href = '/Product/Delete/' + id;
-            }
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "This product will be marked as inactive!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#ffc107',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Yes, delete it!',
+                cancelButtonText: 'Cancel'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = '/Product/Delete/' + id;
+                }
+            })
         }
     </script>
 }

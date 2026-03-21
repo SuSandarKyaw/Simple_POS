@@ -4,6 +4,7 @@ namespace _5BB_POS.RequestModels
 {
 	public class ProductRequestModel
 	{
+		public int Id { get; set; }
 		[Required(ErrorMessage = "Product name is required")]
 		[RegularExpression(@"^[a-zA-Z0-9\s]+$", ErrorMessage = "Only letters and numbers are allowed.")]
 		[StringLength(100, MinimumLength = 3)]

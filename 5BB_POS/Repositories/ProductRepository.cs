@@ -13,9 +13,14 @@ namespace _5BB_POS.Repositories
 			_context = context;
 		}
 
-		public Task Delete(int id)
+		public async Task Delete(int id)
 		{
-			throw new NotImplementedException();
+			var product = await Show(id);
+			if (product != null)
+			{
+				product.IsActive = false;
+				await _context.SaveChangesAsync();
+			}
 		}
 
 		public async Task<TblProduct?> GetByName(string name)
@@ -26,13 +31,15 @@ namespace _5BB_POS.Repositories
 
 		public async Task<List<TblProduct>> Index()
 		{
-			return await _context.TblProducts.Where(x => x.IsActive).ToListAsync();
+			return await _context.TblProducts.
+				Include(x => x.Category).
+				Where(x => x.IsActive).ToListAsync();
 			
 		}
 
-		public Task<TblProduct?> Show(int id)
+		public async Task<TblProduct?> Show(int id)
 		{
-			throw new NotImplementedException();
+			return await _context.TblProducts.Include(x=> x.Category).FirstOrDefaultAsync(x => x.ProductId == id && x.IsActive==true);
 		}
 
 		public async Task<TblProduct> Store(TblProduct data)
@@ -42,9 +49,13 @@ namespace _5BB_POS.Repositories
 			return data;
 		}
 
-		public Task<TblProduct> Update(TblProduct data)
+		public async Task<TblProduct> Update(TblProduct data)
 		{
-			throw new NotImplementedException();
+			_context.Entry(data).State = EntityState.Modified;
+			_context.TblProducts.Update(data);
+			await _context.SaveChangesAsync();
+			return data;
+
 		}
 	}
 }
